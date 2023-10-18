@@ -12,9 +12,8 @@ from app.services.constants import FORMAT_DATE
 async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
     # Получаем текущую дату для заголовка документа
     now_date_time = datetime.now().strftime(FORMAT_DATE)
-    # Создаём экземпляр класса Resourse
     service = await wrapper_services.discover('sheets', 'v4')
-    # Формируем тело запроса
+
     spreadsheet_body = {
         'properties': {'title': f'Отчет от {now_date_time}',
                        'locale': 'ru_RU'},
@@ -24,7 +23,7 @@ async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
                                    'gridProperties': {'rowCount': 100,
                                                       'columnCount': 11}}}]
     }
-    # Выполняем запрос
+
     response = await wrapper_services.as_service_account(
         service.spreadsheets.create(json=spreadsheet_body)
     )
@@ -32,7 +31,7 @@ async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
     return spreadsheetid
 
 
-# Функция для предоставления прав доступа вашему личному аккаунту
+# Функция для предоставления прав доступа личному аккаунту
 async def set_user_permissions(
         spreadsheetid: str,
         wrapper_services: Aiogoogle
@@ -64,7 +63,7 @@ async def spreadsheets_update_value(
         ['Топ проектов по скорости закрытия'],
         ['Название проекта', 'Время сбора', 'Описание']
     ]
-    # # Здесь в таблицу добавляются строчки
+    # # Здесь в таблицу добавляются строки
     for project in projects:
         project_row = [
             str(project['name']),
