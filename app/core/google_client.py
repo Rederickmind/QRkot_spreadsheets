@@ -3,8 +3,10 @@
 # Подключаем классы асинхронной бибилиотеки
 from aiogoogle import Aiogoogle
 from aiogoogle.auth.creds import ServiceAccountCreds
+
 # Подключаем настройки
 from app.core.config import settings
+
 # Список разрешений
 SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
