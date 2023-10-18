@@ -5,14 +5,13 @@ from datetime import datetime
 from aiogoogle import Aiogoogle
 
 from app.core.config import settings
-
-FORMAT = "%Y/%m/%d %H:%M:%S"
+from app.services.constants import FORMAT_DATE
 
 
 # Функция создания таблицы
 async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
     # Получаем текущую дату для заголовка документа
-    now_date_time = datetime.now().strftime(FORMAT)
+    now_date_time = datetime.now().strftime(FORMAT_DATE)
     # Создаём экземпляр класса Resourse
     service = await wrapper_services.discover('sheets', 'v4')
     # Формируем тело запроса
@@ -57,7 +56,7 @@ async def spreadsheets_update_value(
         projects: list,
         wrapper_services: Aiogoogle
 ) -> None:
-    now_date_time = datetime.now().strftime(FORMAT)
+    now_date_time = datetime.now().strftime(FORMAT_DATE)
     service = await wrapper_services.discover('sheets', 'v4')
     # Здесь формируется тело таблицы
     table_values = [
@@ -67,13 +66,17 @@ async def spreadsheets_update_value(
     ]
     # # Здесь в таблицу добавляются строчки
     for project in projects:
-        table_values.append(list(map(str.strip, projects.split(','))))
+        project_row = [
+            str(project['name']),
+            str(project['funding_time']),
+            str(project['description'])
+        ]
+        table_values.append(project_row)
 
     update_body = {
         'majorDimension': 'ROWS',
         'values': table_values
     }
-    # response = await wrapper_services.as_service_account(
     await wrapper_services.as_service_account(
         service.spreadsheets.values.update(
             spreadsheetId=spreadsheetid,

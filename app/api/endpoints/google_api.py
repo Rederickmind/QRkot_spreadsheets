@@ -14,7 +14,7 @@ router = APIRouter()
 
 @router.post(
     '/',
-    response_model=list[dict[str, int]],
+    response_model=list,
     dependencies=[Depends(current_superuser)],
 )
 async def get_report(
@@ -30,4 +30,5 @@ async def get_report(
     await spreadsheets_update_value(spreadsheetid,
                                     projects,
                                     wrapper_services)
+    print(f'Отчёт: https://docs.google.com/spreadsheets/d/{spreadsheetid}')
     return projects
